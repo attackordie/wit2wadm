@@ -129,12 +129,11 @@ impl<'a> DirectionalInterface<'a> {
             // For all other (custom) interfaces, parse them manually requiring at least
             // a namespace, package, and interface name
             s => {
-                let (namespace, rest) = s
-                    .split_once(':')
-                    .expect("invalid interface: missing namespace");
-                let (package, rest) = rest
-                    .split_once('/')
-                    .expect("invalid interface: missing package");
+                // Gracefully handle malformed interface strings by returning None
+                // instead of panicking. This allows components with invalid WIT
+                // to be pushed without wadm manifests rather than aborting.
+                let (namespace, rest) = s.split_once(':')?;
+                let (package, rest) = rest.split_once('/')?;
                 let (interface, version) = rest
                     .split_once('@')
                     .map(|(i, v)| (i, Some(v)))

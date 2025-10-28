@@ -29,13 +29,12 @@ impl exports::wasmcloud::tools::convert::Guest for Wit2WadmComponent {
             .iter()
             .find_map(|(id, w)| (id == world).then_some(w))
             .cloned()
-            .context("component world missing")
-            .expect("should be able to find component world");
+            .ok_or_else(|| "component world missing".to_string())?;
 
         let (name, description, version, image) =
             resolve_empty_strings(name, description, version, image);
         let manifest = wit2wadm::wit2wadm(resolve, &world, &name, &description, &version, &image)
-            .expect("should be able to convert to manifest");
+            .map_err(|e| format!("failed to convert to manifest: {}", e))?;
 
         let yaml_result = serde_yaml::to_string(&manifest);
         match yaml_result {

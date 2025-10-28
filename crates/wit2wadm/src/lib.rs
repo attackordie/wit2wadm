@@ -29,8 +29,7 @@ pub fn wit2wadm_from_folder(
         .iter()
         .find_map(|(_, w)| (w.name == world_name.as_ref()).then_some(w))
         .cloned()
-        .context("component world missing")
-        .expect("should be able to find component world");
+        .context("component world missing")?;
 
     let manifest = wit2wadm(resolve, &world, name, description, version, image)
         .context("should be able to convert to manifest")?;
@@ -62,8 +61,7 @@ pub fn raw_wit_to_wadm(
         .iter()
         .find_map(|(_, w)| (w.name == world_name.as_ref()).then_some(w))
         .cloned()
-        .context("component world missing")
-        .expect("should be able to find component world");
+        .context("component world missing")?;
 
     wit2wadm(resolve, &world, name, description, version, image)
 }
@@ -103,8 +101,7 @@ pub fn raw_component_to_wadm(
         .iter()
         .find_map(|(id, w)| (id == world).then_some(w))
         .cloned()
-        .context("component world missing")
-        .expect("should be able to find component world");
+        .context("component world missing")?;
 
     wit2wadm(resolve, &world, name, description, version, image)
 }
